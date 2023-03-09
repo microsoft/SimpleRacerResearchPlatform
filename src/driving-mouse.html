@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SimpleRacerResearchPlatform - Driving Demo</title>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+    }
+
+    svg {
+        padding: 0;
+        display:inline;
+        margin: 0 auto;
+        max-height: 100%;
+        max-width: 100%;
+    }
+    table {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    td {
+        padding: 0 30px;
+    }
+    th {
+        text-align: left;
+    }
+
+    .btn {
+        border: 1px solid black; 
+        border-radius: 4px; 
+        padding: 4px; 
+    }
+</style>
+</head>
+<body>
+    <div style="float:left; margin-top:20px; margin-left:30px; margin-right:30px;width:400px;height:960px;border:1px solid black;">
+        <div style="text-align: center; margin-top:20px; font-size:x-large;">Lap <span id="numberOfLaps" >0</span></div>
+        <table id="scoreTable" style="border:5px double black; margin-top:20px"/>
+        <div style="margin-left:140px; margin-top:20px"><span id="chronometer_seconds" style="font-size:xxx-large;">0:00</span><span id="chronometer_milliseconds" style="font-size:x-large;">.00</span></div>
+        <table style="width:80%; margin-top:30px; margin-left:60px">
+            <tr>
+                <th>Previous time</th>
+                <td id="previousTime"/>
+              </tr>
+            <tr>
+              <th>Sum of best segments</th>
+              <td id="sumOfBestSegments"/>
+            </tr>
+          </table>
+        <div style="text-align: center; margin-top:60px"><span id="fps" style="font-size:x-large;">60.0</span> FPS</div>
+            
+    </div>
+    
+    <svg id="gameview" viewBox = "0 40 200 200" xmlns="http://www.w3.org/2000/svg" >
+        <defs>
+            <clipPath id="bbox">
+                <rect x="0" y="40" width="200" height="200"></rect>
+            </clipPath>
+        </defs>
+        <pattern id="pattern-checkers" x="0" y="0" width="2" height="2" patternUnits="userSpaceOnUse">
+            <rect class="checker" x="0" y="0" width="1" height="1" style="fill: #FFFFFF"></rect>
+            <rect class="checker" x="0" y="1" width="1" height="1" style="fill: #000000"></rect>
+            <rect class="checker" x="1" y="1" width="1" height="1" style="fill: #FFFFFF"></rect>
+            <rect class="checker" x="1" y="0" width="1" height="1" style="fill: #000000"></rect>
+        </pattern>
+        
+        <g clip-path="url(#bbox)">
+        <g id="everything">
+            <g id="course">
+                <rect id="background"
+                    style="fill:#788921;stroke:none;"
+                    width="360"
+                    height="360"
+                    x="-80"
+                    y="-40">
+                </rect>
+                <!-- Populated in setBackground() -->
+                <g id="rocks"></g>
+                <g id="bush_group"></g>
+                <path
+                    id="water"
+                    style="fill:#00428e;fill-opacity:1;stroke:#000000;stroke-width:0.31573px;stroke-linejoin:round;"
+                    >
+                </path>
+                <g id="road">
+                    <path id="underneath-road"
+                        style="fill:none;stroke:#69500a;stroke-width:11;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"/>
+                    <path id="road-tarmac"
+                        style="fill:none;stroke:#000000;stroke-width:9.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;"/>
+                    <path id="road-centerline"
+                        style="fill:none;stroke:#ffcc00;stroke-width:0.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.75, 3;"/>
+                </g>
+                <rect id="starting_line" x="0" y="0" width="9" height="2" style="fill:url(#pattern-checkers);stroke:none;"></rect>
+                <g id="gates_group"></g>
+            </g>
+            <rect id="boundary" style="stroke-width:0.4px; stroke: #443355; stroke-dasharray: 1.5, 1, .75, 1; fill: none" x="0" y="40" width="200" height="200"></rect>
+            <g id="car">
+                <path
+                    style="fill:#aa4400;stroke:#666666;stroke-width:0.15;stroke-linejoin:round;"
+                    d="m -1.24,0 0.28,-5 1.9,0 0.28,5 0,1.4 l -2.46,0 z">
+                </path>
+                <rect
+                    style="fill:#272727;stroke:#666666;stroke-width:0.1;stroke-linejoin:round;"
+                    width="0.32"
+                    height="1.1244452"
+                    x="1.26"
+                    y="-4">
+                </rect>
+                <rect
+                    style="fill:#272727;stroke:#666666;stroke-width:0.1;stroke-linejoin:round;"
+                    width="0.32"
+                    height="1.1244452"
+                    x="-1.59"
+                    y="-4">
+                </rect>
+                <rect
+                    style="fill:#272727;stroke:#666666;stroke-width:0.1;stroke-linejoin:round;"
+                    width="0.32"
+                    height="1.1244452"
+                    x="1.4"
+                    y="0">
+                </rect>
+                <rect
+                    style="fill:#272727;stroke:#666666;stroke-width:0.1;stroke-linejoin:round;"
+                    width="0.32"
+                    height="1.1244452"
+                    x="-1.74"
+                    y="0">
+                </rect>
+                <rect
+                    style="fill:#ade8ff;stroke:#666666;stroke-width:0.05;stroke-linejoin:round"
+                    width="2"
+                    height="1.2"
+                    x="-1"
+                    y="-1.5">
+                </rect>
+            </g>
+        </g>
+        </g>
+        <text id="pausetext" x="100" y="140" fill="white" font-family="sans-serif" font-size="18" text-anchor="middle" dominant-baseline="middle" style="-moz-user-select: none; -webkit-user-select: none; user-select: none;">Click or touch to play</text>
+    </svg>
+    <div style="margin-top:3px;padding-left:7%;">
+        <canvas id="monitor" style="border:1px solid black;"></canvas> 
+        <svg style="position:relative;display:inline-flex;" width=100 height=100 viewbox="-15 -15 30 30" xmlns="http://www.w3.org/2000/svg">
+            <circle cx=0 cy=0 r=0.5 fill=gray></circle>
+            <circle cx=0 cy=0 r=14.94 stroke-width=.05 stroke=black fill=none></circle>
+            <circle id="preddisplay" cx=0 cy=0 r=1 fill="lightgray"></circle>
+            <circle id="actdisplay" cx=0 cy=0 r=1 fill="darkblue"></circle>
+        </svg>
+
+
+        <div style="float:left; margin-top:5px; margin-right:2ex;">
+            <span id="newgameButton" class="btn">New Game</span><br>
+        </div>
+        <!-- Populated in driving.js -->
+        <div style="float:left; margin-top:5px; margin-right:2ex;">
+            Map:<br>
+           <select style="float:left; margin-top:5px; margin-right:2ex" id="mapSelectBox">
+             <option value="">--Random--</option>
+           </select><br><br>
+            Starting position:<br>
+           <select style="float:left; margin-top:5px; margin-right:2ex" id="startingPosSelectBox">
+             <option value="">--Random--</option>
+           </select>
+        </div>
+        <div style="float:left; margin-top:5px; margin-right:2ex;">
+        Background:<br>
+            <input type="radio" id="bg-random" value="bg-random" name="bg-select"> <label for="bg-random">Random</label><br>
+            <input type="radio" id="bg-map" value="bg-map" name="bg-select" checked> <label for="bg-map">Linked to map</label><br>
+            <input type="radio" id="bg-seed" value="bg-seed" name="bg-select"> <label for="bg-seed">Seed</label>
+            <input type="text" id="bg-seed-input" size="3ex" value="1234">
+        </div>
+        <div style="float:left; margin-top:5px; margin-right:2ex;">
+            Speed:<br>
+            <input type="radio" id="lvl-easy" value="lvl-easy" name="level-select"> <label for="lvl-easy">Easy</label><br>
+            <input type="radio" id="lvl-norm" value="lvl-norm" name="level-select" checked> <label for="lvl-norm">Normal</label><br>
+            <input type="radio" id="lvl-hard" value="lvl-hard" name="level-select"> <label for="lvl-hard">Hard</label><br>
+            <input type="radio" id="lvl-xhrd" value="lvl-xhrd" name="level-select"> <label for="lvl-xhrd">Harder</label>
+        </div>
+        <div style="float:left; margin-top:5px; margin-right:2ex;">
+            <span id="recordbutton" class="btn" style="color: rgb(140, 0, 0)">&#x23FA; Record</span><p>
+            <span id="savebutton" class="btn">Save <span id="bufsize">0</span> frames</span>
+        </div>
+        <div style="float:left; margin-top:5px; margin-right:2ex;">
+            <input id="lag" name="lag" type="checkbox"> <label for="lag">Lag</label> every <input type="text" id="lagfreq" name="lagfreq" size="3ex" value="1.0">s for <input type="text" id="laglen" name="laglen" size="4ex" value="300">ms avg<br>
+            <input id="noise" name="noise" type="checkbox"> <label for="noise">Inject noise</label> of scale <input type="text" id="noisescale" name="noisescale" size="3ex" value="5.0">/10<br>
+            <input id="preds" name="preds" type="checkbox" checked> <label for="preds">Show predictions</label><br>
+            <input id="lag-assist" name="lag-assist" type="checkbox"> <label for="lag-assist">Assist during lag</label><br>
+            <input id="self-driving" name="self-driving" type="checkbox"> <label for="self-driving">Self-driving</label>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+    <script type="text/javascript" src="driving.js"></script>
+</body>

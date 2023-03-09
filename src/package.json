@@ -1,0 +1,26 @@
+{
+    "dependencies": {
+      "fs": "^0.0.1-security",
+      "http": "^0.0.1-security",
+      "path": "^0.12.7"
+    },
+    "scripts": {
+      "start": "node server.js"
+    },
+    "name": "src",
+    "version": "1.0.0",
+    "main": "server.js",
+    "devDependencies": {
+      "fs": "^0.0.1-security",
+      "http": "^0.0.1-security",
+      "path": "^0.12.7"
+    },
+    "keywords": [
+      "racing",
+      "imitation learning"
+    ],
+    "author": "MSR Galena Team",
+    "license": "MIT",
+    "description": "A simple Web Racing Game Demo using imitation learning models"
+  }
+  
