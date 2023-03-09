@@ -14,11 +14,11 @@
 
 ## Project Structures
 
-
+```
 └───src:  Python notebooks and web demo UI files
     ├───data: Training data with [README](/src/data/README.md)
     └───models: Pre-trained models (.onnx) with [README](/src/models/README.md)
-   
+```
 
 ## Getting Started
 
